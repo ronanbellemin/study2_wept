@@ -1,0 +1,28 @@
+Qualtrics.SurveyEngine.addOnload(function() {
+    // Fonction de validation
+    function validerCases() {
+        var casesCorrectes = ["case1", "case2", "case3"]; // Remplacez par les identifiants réels de vos cases correctes
+        var casesIncorrectesSelectionnees = 0;
+
+        // Compter le nombre de cases incorrectes sélectionnées
+        jQuery('.InputTable input[type="checkbox"]').each(function() {
+            var caseID = jQuery(this).attr('id');
+            if (jQuery(this).is(':checked') && !casesCorrectes.includes(caseID)) {
+                casesIncorrectesSelectionnees++;
+            }
+        });
+
+        // Calculer le pourcentage de cases incorrectes
+        var pourcentageIncorrect = (casesIncorrectesSelectionnees / casesCorrectes.length) * 100;
+
+        // Vérifier si les critères de validation sont respectés
+        if (pourcentageIncorrect <= 10) {
+            this.enableNextButton(); // Activer le bouton "Suivant"
+        } else {
+            this.disableNextButton(); // Désactiver le bouton "Suivant"
+        }
+    }
+
+    // Associer la fonction de validation à l'événement onChange de la question
+    jQuery('.InputTable input[type="checkbox"]').change(validerCases);
+});
