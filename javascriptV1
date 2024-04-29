@@ -1,0 +1,45 @@
+Qualtrics.SurveyEngine.addOnPageSubmit(function()
+{
+    var correctAnswers = ['4010_page_1_4', '4010_page_1_10', '4010_page_2_6', '4010_page_3_1', 
+	'4010_page_3_3', '4010_page_3_6', '4010_page_3_7', '4010_page_3_8', '4010_page_4_7']; // Identifiants des réponses correctes
+    var totalAnswers = 40; // Nombre total de réponses
+	var totalCorrectAnswers = 9 // Nombre total de réponses correctes
+	var totalIncorrectAnswers = totalAnswers - totalCorrectAnswers // Nombre total de réponses incorrectes
+    
+    var correctCount = 0; // Compteur de réponses correctes
+    var incorrectCount = 0; // Compteur de réponses incorrectes
+    
+     // Récupérer les valeurs des réponses
+    jQuery('.q-checked').each(function() {
+        var choiceID = jQuery(this).attr('id'); // Récupérer l'ID de la réponse
+        if (correctAnswers.includes(choiceID)) {
+            correctCount++;
+        } else {
+            incorrectCount++;
+        }
+    });
+	
+    // Calculer les pourcentages
+    var correctPercentage = (correctCount / totalCorrectAnswers) * 100;
+    var incorrectPercentage = (incorrectCount / totalIncorrectAnswers) * 100;
+    
+    // Vérifier les conditions
+    if (correctPercentage < 90 || incorrectPercentage > 10) {
+        // Afficher un message d'erreur
+        var errorMessage = "Vous n'avez pas répondu à suffisamment de questions correctement. \n";
+        errorMessage += "Taux requis de réponses correctes: 90%\n";
+		errorMessage += "Taux maximum de réponses incorrectes: 10%\n";
+        errorMessage += "Votre taux de réponses correctes: " + correctPercentage.toFixed(2) + "%\n";
+        errorMessage += "Votre taux de réponses incorrectes: " + incorrectPercentage.toFixed(2) + "%\n";
+        alert(errorMessage);
+        
+        // Empêcher la soumission du questionnaire
+        this.disableNextButton(true);
+        
+        // Ne pas passer à la prochaine page
+        return false;
+    }
+    
+    // Si toutes les conditions sont remplies, continuer normalement
+    return true;
+});
